@@ -1,0 +1,25 @@
+{% extends 'inventoryManager/base_template.html' %}
+
+{% block content %}
+<h1>{{ organization.name }}</h1>
+<p><strong>POC: </strong> {{ organization.contact_name }}</p>
+<p><strong>Contact email: </strong> {{ organization.contact_email }}</p>
+<p><strong>About: </strong> {{ organization.about }}</p>
+
+    <h2>List of Orders: <a class="btn btn-primary" href="{% url 'create-order' organization.id %}" role="button">New</a></h2>
+    {% if order_list %}
+    <div class="container d-flex flex-row p-1 text-dark text-left float-start">
+        {% for order in order_list %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5>{{ order.title }}</h5>
+                        <p class="card-text">{{ order.description }}</p>
+                        <a class="btn btn-primary" href="{{ order.get_absolute_url }}" role="button">View</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+<p>This portfolio has no projects.</p>
+    {% endif %}
+    {% endblock %}

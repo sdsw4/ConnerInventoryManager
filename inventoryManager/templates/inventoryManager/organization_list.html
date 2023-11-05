@@ -1,0 +1,33 @@
+{% extends 'inventoryManager/base_template.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="display-4">Organization Management</h1>
+<h1 class="display-5">All Organizations <a class="btn btn-primary" href="{% url 'create-organization' %}" role="button">Create Organization</a></h1>
+{% if organization_list %}
+<div class="d-flex flex-column d-grid gap-3">
+    {% for organization in organization_list %}
+        <div class="d-flex flex-row border">
+            <!-- Image container-->
+            <img src="{% static 'images/noImage.png' %}" alt="Organization Logo">
+
+            <!-- Content Container-->
+            <div>
+                <h4 class="display-6">{{ organization.name }}</h4>
+
+                <h5 class="">Number of orders: {{ organization.getNumOrders }}</h5>
+                <p class="">
+                    POC: {{ organization.contact_name }}<br>
+                    Contact Email: {{ organization.contact_email }}
+                </p>
+                <a class="btn btn-primary" href="{{ organization.get_absolute_url }}" role="button">View Details</a>
+                <a class="btn btn-secondary" href="{% url 'edit-organization' organization.id %}" role="button">Edit Details</a>
+                <a class="btn btn-danger" href="{% url 'delete-organization' organization.id %}" role="button">Delete</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>There are no Organizations registered.</p>
+{% endif %}
+{% endblock %}
