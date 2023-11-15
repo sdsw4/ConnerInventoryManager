@@ -3,11 +3,11 @@
 
 <!-- Replace block content in base_template.html -->
 {% block content %}
-<h1 class="display-4">Delete Project: {{ organization_data.name }}</h1>
+<h1 class="display-4">Delete Order: {{ order_data.name }}</h1>
 <form action="" method="POST">
     {% csrf_token %}
-    <strong>Are you sure you want to delete this organization?</strong>
-    <p></p>
+    <strong>Are you sure you want to delete this order?</strong>
+    <p>This order has: {{ order_data.getNumItems }} items.</p>
     <input class="btn btn-primary" type="submit" value="Cancel" name="submit">
     <input class="btn btn-primary" type="submit" value="Delete" name="submit">
 </form>

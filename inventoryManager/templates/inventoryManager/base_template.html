@@ -53,12 +53,22 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
+                            Account
                         </a>
+                        <!-- In this case, we want the account menu to change if a user is logged in.-->
+                        {% if currentuser %}
+                        <!-- This menu is for logged in users. There is the option to view account details or log out.-->
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user-details' %}">Account Details</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout-user' %}">Log out</a></li>
                         </ul>
+                        {% else %}
+                        <!-- This menu is for not logged in users. There is the option to login and the option to register.-->
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'login-user' %}">Log in</a></li>
+                            <li><a class="dropdown-item" href="{% url 'create-user' %}">Register</a></li>
+                        </ul>
+                        {% endif %}
                     </li>
 
                 </ul>

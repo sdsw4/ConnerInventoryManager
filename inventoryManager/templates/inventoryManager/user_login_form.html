@@ -1,0 +1,24 @@
+﻿<!-- inherit from base.html -->
+{% extends 'inventoryManager/base_template.html' %}
+
+<!-- Replace block content in base_template.html -->
+{% block content %}
+<h1 class="display-4">User Login</h1>
+{% if notloggedin %}
+<!-- User's not logged in, and they came to this page because of that. Show this error.-->
+<p class="lead text-warning">You must login to view this page.</p>
+{% endif %}
+<form action="" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+        <label class="control-label lead" for="id_{{ field.name }}">{{ field.label }}</label>
+        <br>
+        {{ field }}
+        <br>
+    </div>
+    {% endfor %}
+    <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit">
+    <input class="btn btn-primary" type="submit" value="Submit" name="submit">
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'inventoryManager/base_template.html' %}
+
+{% block content %}
+    <h1>
+        <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> ->
+        <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a> ->
+        {{ orderItem.itemName }}
+    </h1>
+
+    <a class="btn btn-secondary" href="{% url 'edit-order-item' organization.id order.id orderItem.id %}" role="button">Edit Details</a>
+{% endblock %}
