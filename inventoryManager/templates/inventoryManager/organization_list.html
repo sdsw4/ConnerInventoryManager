@@ -2,19 +2,21 @@
 {% load static %}
 
 {% block content %}
-<h1 class="display-4">Organization Management</h1>
+
 
 {% if currentuser %}
 <!-- Only show create organization if a user is logged in.-->
-<h1 class="display-5">All Organizations <a class="btn btn-primary" href="{% url 'create-organization' %}" role="button">Create Organization</a></h1>
+<h1 class="display-3">Organization Management</h1>
 {% else %}
-<h1 class="display-5">All Organizations</h1>
+<h1 class="display-3">All Organizations</h1>
 {% endif %}
 
-{% if organization_list %}
-<div class="d-flex flex-column d-grid gap-3">
-    {% for organization in organization_list %}
-    <div class="d-flex flex-row border">
+{% if currentuser %}
+{% if usersOrgs %}
+<div class="d-flex flex-column d-grid gap-3 mx-2 mt-4">
+    <h4 class="display-6">My Organizations <a class="btn btn-primary" href="{% url 'create-organization' %}" role="button">Create Organization</a></h4>
+    {% for organization in usersOrgs %}
+    <div class="d-flex flex-row border mx-4">
         <!-- Image container-->
         <img src="{% static 'images/noImage.png' %}" alt="Organization Logo">
 
@@ -34,7 +36,64 @@
     </div>
     {% endfor %}
 </div>
+{% endif %}
+
+{% if notUsersOrgs %}
+<div class="d-flex flex-column d-grid gap-3 mx-2 mt-4">
+    <h4 class="display-6">Other Organizations</h4>
+    {% for organization in notUsersOrgs %}
+    <div class="d-flex flex-row border mx-4">
+        <!-- Image container-->
+        <img src="{% static 'images/noImage.png' %}" alt="Organization Logo">
+
+        <!-- Content Container-->
+        <div>
+            <h4 class="display-6">{{ organization.name }}</h4>
+
+            <h5 class="">Number of orders: {{ organization.getNumOrders }}</h5>
+            <p class="">
+                POC: {{ organization.contact_name }}<br>
+                Contact Email: {{ organization.contact_email }}
+            </p>
+            <a class="btn btn-primary" href="{{ organization.get_absolute_url }}" role="button">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if usersOrgs %}
+<div></div>
+{% elif notUsersOrgs %}
+<div></div>
 {% else %}
 <p>There are no Organizations registered.</p>
 {% endif %}
+{% else %}
+    {% if organization_list %}
+<div class="d-flex flex-column d-grid gap-3 mx-2 mt-4">
+    {% for organization in organization_list %}
+    <div class="d-flex flex-row border mx-4">
+        <!-- Image container-->
+        <img src="{% static 'images/noImage.png' %}" alt="Organization Logo">
+
+        <!-- Content Container-->
+        <div>
+            <h4 class="display-6">{{ organization.name }}</h4>
+
+            <h5 class="">Number of orders: {{ organization.getNumOrders }}</h5>
+            <p class="">
+                POC: {{ organization.contact_name }}<br>
+                Contact Email: {{ organization.contact_email }}
+            </p>
+            <a class="btn btn-primary" href="{{ organization.get_absolute_url }}" role="button">View Details</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>There are no Organizations registered.</p>
+{% endif %}
+{% endif %}
+
 {% endblock %}

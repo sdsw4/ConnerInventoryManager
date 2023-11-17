@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('accessDenied', views.denied, name='denied'),
 
     path('createUser/', views.CreateUser, name = 'create-user'),
     path('login/', views.LoginUser, name = 'login-user'),

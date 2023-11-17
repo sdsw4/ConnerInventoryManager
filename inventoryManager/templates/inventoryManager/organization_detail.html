@@ -1,25 +1,52 @@
 {% extends 'inventoryManager/base_template.html' %}
+{% load static %}
 
 {% block content %}
-<h1>
-    <a href="{% url 'organizations' %}">Organizations</a> ->
-    {{ organization.name }}
-</h1>
-<p><strong>POC: </strong> {{ organization.associatedUser.last_name }}, {{ organization.associatedUser.first_name }}</p>
-<p><strong>Contact email: </strong> {{ organization.associatedUser.email }}</p>
-<p><strong>About: </strong> {{ organization.about }}</p>
+<div class="d-flex flex-column d-grid gap-4 mb-4">
+    <div class="d-flex flex-row border gap-4 mx-2">
+        <h1>
+            <a href="{% url 'organizations' %}">Organizations</a> ->
+            {{ organization.name }}
+        </h1>
+    </div>
+</div>
 
-{% if currentuser %}
-<!-- Only show edit options if a user is logged in-->
-    <a class="btn btn-secondary" href="{% url 'edit-organization' organization.id %}" role="button">Edit Details</a>
-    <a class="btn btn-danger" href="{% url 'delete-organization' organization.id %}" role="button">Delete</a>
-    <h2>List of Orders: <a class="btn btn-primary" href="{% url 'create-order' organization.id %}" role="button">New</a></h2>
-{% else %}
-    <h2>List of Orders: </h2>
-{% endif %}
+<div class="d-flex flex-column d-grid gap-4 mx-2 mb-4">
+    <div class="d-flex flex-row">
+        <!-- Image container-->
+        <img src="{% static 'images/noImage.png' %}" alt="Organization Logo">
+
+        <!-- Content Container-->
+        <div>
+            <h5 class="">
+                <strong>POC:  </strong>{{ organization.associatedUser.last_name }}, {{ organization.associatedUser.first_name }}
+            </h5>
+            <h5 class="">
+                <strong>Contact Email:  </strong>{{ organization.associatedUser.email }}
+            </h5>
+            <h5 class="">
+                <strong>About: </strong> {{ organization.about }}
+            </h5>
+
+            {% if allow %}
+            <!-- Only show edit options if a user is logged in and this is their organization-->
+            <a class="btn btn-secondary" href="{% url 'edit-organization' organization.id %}" role="button">Edit Details</a>
+            <a class="btn btn-danger" href="{% url 'delete-organization' organization.id %}" role="button">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 {% if order_list %}
-<div class="container d-flex flex-row p-1 text-dark text-left float-start">
+<div class="mx-2">
+    {% if allow %}
+    <h2>List of Orders: <a class="btn btn-primary" href="{% url 'create-order' organization.id %}" role="button">New</a></h2>
+    {% else %}
+    <h2>List of Orders: </h2>
+    {% endif %}
+</div>
+<div class="container d-flex flex-row p-1 text-dark text-left float-start mx-4">
+
     {% for order in order_list %}
     <div class="card" style="width: 18rem;">
         <div class="card-body">
@@ -39,6 +66,10 @@
     {% endfor %}
 </div>
         {% else %}
-<p>This organization has no orders.</p>
-    {% endif %}
+            {% if allow %}
+                <h2>This organization has no orders.<a class="btn btn-primary" href="{% url 'create-order' organization.id %}" role="button">New</a></h2>
+            {% else %}
+                <h2>This organization has no orders.</h2>
+            {% endif %}
+        {% endif %}
     {% endblock %}

@@ -1,10 +1,14 @@
 {% extends 'inventoryManager/base_template.html' %}
 
 {% block content %}
-<h1>
-    <a href="{% url 'organizations' %}">Organizations</a> ->
-    <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> -> {{ order.title }}
-</h1>
+<div class="d-flex flex-column d-grid gap-4 mb-4">
+    <div class="d-flex flex-row border gap-4 mx-2">
+        <h1>
+            <a href="{% url 'organizations' %}">Organizations</a> ->
+            <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> -> {{ order.title }}
+        </h1>
+    </div>
+</div>
 
 <a class="btn btn-secondary" href="{% url 'edit-order' organization.id order.id %}" role="button">Edit Details</a>
 <a class="btn btn-danger" href="{% url 'delete-order' organization.id order.id %}" role="button">Delete</a>

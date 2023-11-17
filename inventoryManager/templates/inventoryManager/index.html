@@ -4,20 +4,22 @@
 
 <!-- Replace block content in base_template.html -->
 {% block content %}
-<h1 class="display-4">Inventory Management Project</h1>
+<h1 class="display-4 mx-2">Inventory Management Project</h1>
 {% if currentuser %}
-    <h1 class="display-6">Welcome, {{ currentuser.username }}</h1>
+    <h1 class="display-6 mx-2">Welcome, {{ currentuser.username }}</h1>
 {% endif %}
-<h1 class="display-6">All Organizations</h1>
+<h1 class="display-6 mx-4">Organizations managed:</h1>
     {% if organizations %}
-    <div class="container d-flex flex-row p-1 text-dark text-left float-start d-grid gap-3">
+    <div class="container d-flex flex-row p-1 text-dark text-left float-start d-grid gap-3 mx-4">
         {% for i in organizations %}
-        <div class="card" style="width: 18rem;">
-	<img class="card-img-top" src="{% static 'images/noImage.png' %}" alt="Organization Logo">
+        <div class="card" style="width: 20rem;">
+	        <img class="card-img-top" src="{% static 'images/noImage.png' %}" alt="Organization Logo">
             <div class="card-body">
                 <h5 class="card-title">{{i.name}}</h5>
-                <p class="card-text">POC:{{ i.contact_name }}<br>
-			Contact Email:{{ i.contact_email }}</p>
+                <p class="card-text">
+                    <strong>POC: </strong><br />{{ i.associatedUser.last_name }}, {{ i.associatedUser.first_name }}<br />
+                    <strong>Contact Email: </strong><br />{{ i.associatedUser.email }}
+                </p>
                 <a class="btn btn-primary" href="{{ i.get_absolute_url }}" role="button">View</a>
             </div>
         </div>

@@ -3,16 +3,19 @@
 
 <!-- Replace block content in base_template.html -->
 {% block content %}
-
-<h1>
-    <a href="{% url 'organizations' %}">Organizations</a> ->
-    <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> ->
-    {% if order %}
-    {{ state }}: <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a>
-    {% else %}
-    {{ state }} Order
-    {% endif %}
-</h1>
+<div class="d-flex flex-column d-grid gap-4 mb-4">
+    <div class="d-flex flex-row border gap-4 mx-2">
+        <h1>
+            <a href="{% url 'organizations' %}">Organizations</a> ->
+            <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> ->
+            {% if order %}
+            {{ state }}: <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a>
+            {% else %}
+            {{ state }} Order
+            {% endif %}
+        </h1>
+    </div>
+</div>
 
 <form action="" method="POST">
     {% csrf_token %}

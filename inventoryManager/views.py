@@ -7,6 +7,20 @@ from inventoryManager.forms import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
+def userAuthCheck(user, expectedUser):
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
+        # and let them in
+        return True
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. okay at this point whoever keeps fucking with stuff
+        # needs to get a life. unless we hired that one to poke.
+        return render(request, 'inventoryManager/denied.html')
+    else:
+        # user's anonymous, so we can't let them continue
+        # let them know by bringing them to the login page.
+        return redirect('login-user')
+
 # Create your views here.
 def index(request):
     organizations = Organization.objects.all()
@@ -23,6 +37,9 @@ def index(request):
         1+1
 
     return render( request, 'inventoryManager/index.html', context)
+
+def denied(request):
+    return render(request, 'inventoryManager/denied.html')
 
 # ///////////////////////////////////////////////
 # //         BEGIN USER SPECIFIC STUFF         /////////////////////////////////////////////////////////////
@@ -178,10 +195,17 @@ def EditOrganization(request, id):
     context = {'organization' : organizationToUpdate}
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organizationToUpdate.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organizationToUpdate.associatedUser != request.user:
+        # this isn't the user's organization. can't let them do poking now can we?
+        # don't let them edit anything and redirect to permission denied page since they probably
+        # poked around to get here
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -228,10 +252,17 @@ def DeleteOrganization(request, id):
                'state' : "Delete"}
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organizationToDelete.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organizationToDelete.associatedUser != request.user:
+        # this isn't the user's organization. can't let them do poking now can we?
+        # don't let them delete stuff and redirect to permission denied page since they probably
+        # poked around to get here
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -254,9 +285,11 @@ def OrganizationDetailView(request, id):
     context = {'organization' : organization}
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, but we also want to make sure this is their organization
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+
 
     orders = Order.objects.filter(organization = organization)
     context['order_list'] = orders
@@ -273,6 +306,16 @@ def OrganizationListView(request):
         # User's logged in, go get their username
         # also, we want the template to be slightly different, but that's on the template side
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+        # first we want to get the user's organizations
+        usersOrgs = Organization.objects.all().filter(associatedUser=request.user)
+        context['usersOrgs'] = usersOrgs
+        #now we want to get organizations that aren't the user's
+        notUsersOrgs = []
+        for org in organization_list:
+            if org.associatedUser != request.user:
+                notUsersOrgs.append(org)
+        context['notUsersOrgs'] = notUsersOrgs
 
     context['organization_list'] = organization_list
     return render( request, 'inventoryManager/organization_list.html', context)
@@ -293,10 +336,17 @@ def OrganizationCreateOrder(request, id):
     context = {}
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. how did they get this far?
+        # sounds like someone with too much time on their hands
+        # don't let them mess with this organization
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -352,10 +402,18 @@ def OrganizationEditOrder(request, orgId, orderId):
         )
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. can't let them do mischief can we?
+        # seriously, the bum who decides to poke around with other people's things
+        # should get a writeup.
+        # TODO add something to log users doing naughty stuff, I swear.
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -398,10 +456,16 @@ def OrganizationDeleteOrder(request, orgId, orderId):
                'state' : 'Delete'}
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and orderToDelete.organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and orderToDelete.organization.associatedUser != request.user:
+        # this isn't the user's organization. okay at this point whoever keeps fucking with stuff
+        # needs to get a life. unless we hired that one to poke.
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -424,16 +488,21 @@ def OrderDetailView(request, organizationId, orderId):
     organization = Organization.objects.get(pk=organizationId)
     context = {
                 'order' : order,
-                'organization' : organization
+                'organization' : order.organization
         }
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. this is literally the same stuff, i should probably add this to a function
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
-        # user's anonymous, so we can't let them view an order's details
+        # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
         return redirect('login-user')
 
@@ -458,10 +527,17 @@ def CreateOrderItem(request, organizationId, orderId):
     context['form'] = OrderItemForm()
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. holy crap
+        # however the banshee or something got to figure out how to get here is a real piece of work
+        # by this point I should congratulate them for getting this far.
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -509,6 +585,21 @@ def EditOrderItem(request, organizationId, orderId, itemId):
                'state' : "Edit"
                }
 
+    # user authenticated specific stuff
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
+        # and let them in
+        context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't the user's organization. i'm done
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
+    else:
+        # user's anonymous, so we can't let them continue
+        # let them know by bringing them to the login page.
+        return redirect('login-user')
+
     # prefill form with existing data
     context['form'] = OrderItemForm(
             initial={
@@ -518,16 +609,6 @@ def EditOrderItem(request, organizationId, orderId, itemId):
                 "itemCost" : itemToEdit.itemCost,
                 }
         )
-
-    # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
-        # and let them in
-        context['currentuser'] = request.user
-    else:
-        # user's anonymous, so we can't let them continue
-        # let them know by bringing them to the login page.
-        return redirect('login-user')
 
     if (request.method == 'POST'):
         if request.POST['submit'] == "Cancel":
@@ -567,10 +648,15 @@ def DeleteOrderItem(request, orgId, orderId, itemId):
                }
 
     # user authenticated specific stuff
-    if request.user.is_authenticated:
-        # User's logged in, so we get their object
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
         # and let them in
         context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't under the user's organization. don't let them in
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
     else:
         # user's anonymous, so we can't let them continue
         # let them know by bringing them to the login page.
@@ -595,5 +681,19 @@ def OrderItemDetail(request, organizationId, orderId, itemId):
     context = {'order' : order,
                'organization' : organization,
                'orderItem' : orderItem}
+
+    if request.user.is_authenticated and organization.associatedUser == request.user:
+        # User's logged in, so we get their object. we also check if this is their organization
+        # and let them in
+        context['currentuser'] = request.user
+        context['allow'] = 'yes'
+    elif request.user.is_authenticated and organization.associatedUser != request.user:
+        # this isn't under the user's organization.
+        context['currentuser'] = request.user
+        return render(request, 'inventoryManager/denied.html')
+    else:
+        # user's anonymous, so we can't let them continue
+        # let them know by bringing them to the login page.
+        return redirect('login-user')
 
     return render(request, 'inventoryManager/item_detail.html', context)
