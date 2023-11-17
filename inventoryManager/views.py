@@ -158,8 +158,6 @@ def CreateOrganization(request):
                #create new object from data
                newOrganization = Organization(
                    name = data['name'],
-                   contact_name = data['contact_name'],
-                   contact_email = data['contact_email'],
                    about = data['about'],
                    associatedUser = request.user
                    )
@@ -177,7 +175,7 @@ def CreateOrganization(request):
 # Method to edit an organization
 def EditOrganization(request, id):
     organizationToUpdate = Organization.objects.get(pk=id)
-    context = {}
+    context = {'organization' : organizationToUpdate}
 
     # user authenticated specific stuff
     if request.user.is_authenticated:
@@ -192,8 +190,6 @@ def EditOrganization(request, id):
     # Populate the form with the organization's current data
     form = OrganizationForm(
         initial={"name" : organizationToUpdate.name,
-                 "contact_name" : organizationToUpdate.contact_name,
-                 "contact_email" : organizationToUpdate.contact_email,
                  "about" : organizationToUpdate.about
                  }
         )
@@ -228,7 +224,8 @@ def EditOrganization(request, id):
 def DeleteOrganization(request, id):
     # Get the data for the project to delete
     organizationToDelete = Organization.objects.get(id=id)
-    context = {"organization_data" : organizationToDelete}
+    context = {"organization" : organizationToDelete,
+               'state' : "Delete"}
 
     # user authenticated specific stuff
     if request.user.is_authenticated:
@@ -342,7 +339,7 @@ def OrganizationCreateOrder(request, id):
 def OrganizationEditOrder(request, orgId, orderId):
     organization = Organization.objects.get(pk=orgId)
     orderToEdit = Order.objects.get(pk=orderId)
-    context = {}
+    context = {'order' : orderToEdit}
 
     # prefill form with existing data
     form = OrderForm(
@@ -396,7 +393,9 @@ def OrganizationEditOrder(request, orgId, orderId):
 def OrganizationDeleteOrder(request, orgId, orderId):
     # Get the data for the order to delete
     orderToDelete = Order.objects.get(id=orderId)
-    context = {"order_data" : orderToDelete}
+    context = {"order" : orderToDelete,
+               'organization' : orderToDelete.organization,
+               'state' : 'Delete'}
 
     # user authenticated specific stuff
     if request.user.is_authenticated:
@@ -454,7 +453,7 @@ def CreateOrderItem(request, organizationId, orderId):
 
     context = {'order' : order,
                'organization' : organization,
-               'state' : "Create Item"
+               'state' : "Create"
                }
     context['form'] = OrderItemForm()
 
@@ -563,7 +562,8 @@ def DeleteOrderItem(request, orgId, orderId, itemId):
     organization = order.organization
     context = {"item_data" : itemToDelete,
                'order' : order,
-               'organization' : organization
+               'organization' : organization,
+               'state' : "Delete"
                }
 
     # user authenticated specific stuff

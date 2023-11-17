@@ -8,8 +8,6 @@ from django.urls import reverse
 # An organization will have multiple orders
 class Organization(models.Model):
     name = models.CharField(max_length = 200, unique = True)
-    contact_name = models.CharField(max_length = 200)
-    contact_email = models.CharField(max_length = 200)
     about = models.CharField(max_length = 200, blank = True)
     associatedUser = models.ForeignKey(User, on_delete=models.CASCADE, default = None)
 

@@ -3,8 +3,17 @@
 
 <!-- Replace block content in base_template.html -->
 {% block content %}
-<h1>{{ state }} Order</h1>
-<h4>Organization: {{ organization.name }}</h4>
+
+<h1>
+    <a href="{% url 'organizations' %}">Organizations</a> ->
+    <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> -> 
+    {% if order %}
+    {{ state }}: <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a>
+    {% else %}
+    {{ state }}: Order
+    {% endif %}
+</h1>
+
 <form action="" method="POST">
 
     {% csrf_token %}

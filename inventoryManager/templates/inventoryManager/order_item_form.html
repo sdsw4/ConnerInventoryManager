@@ -3,10 +3,16 @@
 
 <!-- Replace block content in base_template.html -->
 {% block content %}
+
 <h1>
+    <a href="{% url 'organizations' %}">Organizations</a> ->
     <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> ->
     <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a> ->
-    {{ state }} {{ item_data.itemName }}
+    {% if item_data %}
+    {{ state }}: <a href="{% url 'order-item-detail' organization.id order.id item_data.id %}">{{ item_data.itemName }}</a>
+    {% else %}
+    {{ state }}: Order Item
+    {% endif %}
 </h1>
 
 <form action="" method="POST">

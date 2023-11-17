@@ -10,8 +10,6 @@ class DateInput(forms.DateInput):
 
 class OrganizationForm(forms.Form):
     name = forms.CharField(label = "Organization name:", max_length=32)
-    contact_name = forms.CharField(label = "POC Name:", max_length=128)
-    contact_email = forms.CharField(label = "POC Email:", max_length=128)
     about = forms.CharField(label = "Description:", max_length=128, required=False)
 
 class OrderForm(forms.Form):

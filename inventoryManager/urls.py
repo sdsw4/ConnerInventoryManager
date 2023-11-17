@@ -10,13 +10,10 @@ urlpatterns = [
     path('user/', views.UserDetails, name = 'user-details'),
 
     path('organizations/', views.OrganizationListView, name = 'organizations'),
-    path('organization/<int:id>', views.OrganizationDetailView,
-         name='organization-detail'),
+    path('organization/<int:id>', views.OrganizationDetailView, name='organization-detail'),
     path('createOrganization/', views.CreateOrganization, name='create-organization'),
-    path('editOrganization/<int:id>', views.EditOrganization,
-         name='edit-organization'),
-    path('deleteOrganization/<int:id>', views.DeleteOrganization,
-         name='delete-organization'),
+    path('editOrganization/<int:id>', views.EditOrganization, name='edit-organization'),
+    path('deleteOrganization/<int:id>', views.DeleteOrganization, name='delete-organization'),
 
     path('organization/<int:id>/createOrder', views.OrganizationCreateOrder, name = 'create-order'),
     path('organization/<int:orgId>/editOrder/<int:orderId>', views.OrganizationEditOrder, name = 'edit-order'),
