@@ -1,25 +1,41 @@
 {% extends 'inventoryManager/base_template.html' %}
 
 {% block content %}
-<h1>{{ organization.name }}</h1>
-<p><strong>POC: </strong> {{ organization.contact_name }}</p>
-<p><strong>Contact email: </strong> {{ organization.contact_email }}</p>
-<p><strong>About: </strong> {{ organization.about }}</p>
+<div class="d-flex flex-column d-grid gap-4 mb-4">
+    <div class="d-flex flex-row border gap-4 mx-2">
+        <h1>
+            <a href="{% url 'organizations' %}">Organizations</a> ->
+            <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> -> {{ order.title }}
+        </h1>
+    </div>
+</div>
 
-    <h2>List of Orders: <a class="btn btn-primary" href="{% url 'create-order' organization.id %}" role="button">New</a></h2>
-    {% if order_list %}
-    <div class="container d-flex flex-row p-1 text-dark text-left float-start">
-        {% for order in order_list %}
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5>{{ order.title }}</h5>
-                        <p class="card-text">{{ order.description }}</p>
-                        <a class="btn btn-primary" href="{{ order.get_absolute_url }}" role="button">View</a>
-                    </div>
-                </div>
-            {% endfor %}
+<a class="btn btn-secondary" href="{% url 'edit-order' organization.id order.id %}" role="button">Edit Details</a>
+<a class="btn btn-danger" href="{% url 'delete-order' organization.id order.id %}" role="button">Delete</a>
+
+<h2>List of items:</h2>
+    {% if item_list %}
+<h5>
+    Total items in order: {{ order.getNumItems }}
+    <a class="btn btn-primary" href="{% url 'create-order-item' organization.id order.id %}" role="button">Add item</a>
+</h5>
+<div class="container d-flex flex-row p-1 text-dark text-left float-start">
+    {% for item in item_list %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5>{{ item.itemName }}</h5>
+            <p class="card-text">Nsn: {{ item.itemNsn }}</p>
+            <p class="card-text">Quantity: {{ item.itemQuantity }}</p>
+            <p class="card-text">Total Cost: ${{ item.getTotalCost }}</p>
+            <a class="btn btn-primary" href="{{ item.get_absolute_url }}" role="button">View</a>
+            <a class="btn btn-secondary" href="{% url 'edit-order-item' organization.id order.id item.id %}" role="button">Edit Details</a>
+            <a class="btn btn-danger" href="{% url 'delete-order-item' organization.id order.id item.id %}" role="button">Delete</a>
         </div>
+    </div>
+    {% endfor %}
+</div>
         {% else %}
-<p>This portfolio has no projects.</p>
+<p>This order has no items.</p>
+<a class="btn btn-primary" href="{% url 'create-order-item' organization.id order.id %}" role="button">Add an item</a>
     {% endif %}
     {% endblock %}

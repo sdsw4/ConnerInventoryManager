@@ -1,0 +1,22 @@
+﻿<!-- inherit from base.html -->
+{% extends 'inventoryManager/base_template.html' %}
+
+<!-- Replace block content in base_template.html -->
+{% block content %}
+<h1 class="display-4">{{ state }} User</h1>
+<form action="" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+        <label class="control-label lead" for="id_{{ field.name }}">{{ field.label }}</label>
+        <br>
+        {{ field }}
+        <br>
+    </div>
+    {% endfor %}
+    <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
+    <a href="{% url 'index' %}" type="button" class="btn btn-primary">Cancel</a>
+    <input class="btn btn-primary" type="submit" value="Submit" name="submit">
+</form>
+
+{% endblock %}
