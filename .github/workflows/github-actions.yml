@@ -5,7 +5,11 @@ jobs:
   Test-Actions:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
       - uses: nanasess/setup-chromedriver@v2
+        with:
+          python-version: '3.11.4'
       - run: |
             export DISPLAY=:99
             chromedriver --url-base=/wd/hub &
@@ -14,7 +18,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
       - run: pip install flake8
-      - run: pip install distutils
       - run: pip install -r requirements.txt
       - run: python manage.py makemigrations
       - run: python manage.py migrate
