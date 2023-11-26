@@ -230,8 +230,6 @@ def EditOrganization(request, id):
                
                #create new object from data
                organizationToUpdate.name = data['name']
-               organizationToUpdate.contact_name = data['contact_name']
-               organizationToUpdate.contact_email = data['contact_email']
                organizationToUpdate.about = data['about']
 
                #commit new object to database

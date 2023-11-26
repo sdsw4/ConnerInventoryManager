@@ -18,7 +18,6 @@
 </div>
 
 <form action="" method="POST">
-
     {% csrf_token %}
     {% for field in form %}
     <div class="form-group">
@@ -27,8 +26,13 @@
         {{ field }}
         <br>
     </div>
-	{% endfor %}
-    <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit">
+    {% endfor %}
+    <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
+    {% if organization %}
+    <a href="{% url 'organization-detail' organization.id %}" type="button" class="btn btn-primary">Cancel</a>
+    {% else %}
+    <a href="{% url 'organizations' %}" type="button" class="btn btn-primary">Cancel</a>
+    {% endif %}
     <input class="btn btn-primary" type="submit" value="Submit" name="submit">
 </form>
 

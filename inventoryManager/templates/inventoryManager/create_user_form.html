@@ -5,7 +5,6 @@
 {% block content %}
 <h1 class="display-4">{{ state }} User</h1>
 <form action="" method="POST">
-
     {% csrf_token %}
     {% for field in form %}
     <div class="form-group">
@@ -14,8 +13,9 @@
         {{ field }}
         <br>
     </div>
-	{% endfor %}
-    <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit">
+    {% endfor %}
+    <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
+    <a href="{% url 'index' %}" type="button" class="btn btn-primary">Cancel</a>
     <input class="btn btn-primary" type="submit" value="Submit" name="submit">
 </form>
 

@@ -14,7 +14,8 @@
                 <br>
             </div>
             {% endfor %}
-            <input formnovalidate class="btn btn-secondary" type="submit" value="Cancel" name="submit">
+            <!-- <input formnovalidate class="btn btn-secondary" type="submit" value="Cancel" name="submit"> -->
+            <a href="{% url 'index' %}" type="button" class="btn btn-primary">Cancel</a>
             <input class="btn btn-primary" type="submit" value="Submit" name="submit">
         </form>
     </div>

@@ -21,7 +21,8 @@
     {% csrf_token %}
     <strong>Are you sure you want to delete this order?</strong>
     <p>This order has: {{ order.getNumItems }} items.</p>
-    <input class="btn btn-primary" type="submit" value="Cancel" name="submit">
+    <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
+    <a href="{% url 'order-detail' organization.id order.id %}" type="button" class="btn btn-primary">Cancel</a>
     <input class="btn btn-primary" type="submit" value="Delete" name="submit">
 </form>
 

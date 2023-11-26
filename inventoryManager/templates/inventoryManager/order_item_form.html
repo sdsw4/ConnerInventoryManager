@@ -19,7 +19,6 @@
 </div>
 
 <form action="" method="POST">
-
     {% csrf_token %}
     {% for field in form %}
     <div class="form-group">
@@ -28,8 +27,12 @@
         {{ field }}
         <br>
     </div>
-	{% endfor %}
-    <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit">
+    {% endfor %}
+    {% if item_data %}
+    <a href="{% url 'order-item-detail' organization.id order.id item_data.id %}" type="button" class="btn btn-primary">Cancel</a>
+    {% else %}
+    <a href="{% url 'order-detail' organization.id order.id %}" type="button" class="btn btn-primary">Cancel</a>
+    {% endif %}
     <input class="btn btn-primary" type="submit" value="Submit" name="submit">
 </form>
 

@@ -12,9 +12,9 @@
 {% endif %}
 
 {% if currentuser %}
+<h4 class="display-6 ">My Organizations <a class="btn btn-primary" href="{% url 'create-organization' %}" role="button">Create Organization</a></h4>
 {% if usersOrgs %}
 <div class="d-flex flex-column d-grid gap-3 mx-2 mt-4">
-    <h4 class="display-6">My Organizations <a class="btn btn-primary" href="{% url 'create-organization' %}" role="button">Create Organization</a></h4>
     {% for organization in usersOrgs %}
     <div class="d-flex flex-row border mx-4">
         <!-- Image container-->
@@ -26,8 +26,8 @@
 
             <h5 class="">Number of orders: {{ organization.getNumOrders }}</h5>
             <p class="">
-                POC: {{ organization.contact_name }}<br>
-                Contact Email: {{ organization.contact_email }}
+                POC: {{ organization.associatedUser.last_name }}, {{ organization.associatedUser.first_name }}<br>
+                Contact Email: {{ organization.associatedUser.email }}
             </p>
             <a class="btn btn-primary" href="{{ organization.get_absolute_url }}" role="button">View Details</a>
             <a class="btn btn-secondary" href="{% url 'edit-organization' organization.id %}" role="button">Edit Details</a>
@@ -36,6 +36,8 @@
     </div>
     {% endfor %}
 </div>
+{% else %}
+<p class="lead gap-3 mx-2 mt-4">You have no registered organizations.</p>
 {% endif %}
 
 {% if notUsersOrgs %}
@@ -52,8 +54,8 @@
 
             <h5 class="">Number of orders: {{ organization.getNumOrders }}</h5>
             <p class="">
-                POC: {{ organization.contact_name }}<br>
-                Contact Email: {{ organization.contact_email }}
+                POC: {{ organization.associatedUser.last_name }}, {{ organization.associatedUser.first_name }}<br>
+                Contact Email: {{ organization.associatedUser.email }}
             </p>
             <a class="btn btn-primary" href="{{ organization.get_absolute_url }}" role="button">View Details</a>
         </div>
