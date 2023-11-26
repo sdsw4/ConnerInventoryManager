@@ -399,6 +399,9 @@ class SeleniumTester(StaticLiveServerTestCase):
 		
 		# hit submit
 		self.selenium.find_element(By.NAME, "submit").click()
+
+		get_url = self.selenium.current_url
+		print("The current url is:"+str(get_url))
 		
 		# we should be redirected to org list page. verify that the org name is there
 		self.assertTrue(orgName in self.selenium.page_source)
