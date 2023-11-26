@@ -15,8 +15,6 @@ jobs:
             chromedriver --url-base=/wd/hub &
             sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
             
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
       - run: pip install flake8
       - run: pip install -r requirements.txt
       - run: python manage.py makemigrations
