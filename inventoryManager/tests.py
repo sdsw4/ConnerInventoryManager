@@ -318,6 +318,9 @@ class SeleniumTester(StaticLiveServerTestCase):
 		
 		# hit submit
 		self.selenium.find_element(By.NAME, "submit").click()
+
+		get_url = self.selenium.current_url
+		print("The current url is:"+str(get_url))
 		
 		# by this point we should be logged in. the way to check is the welcome text
 		self.assertTrue(self.selenium.find_element(By.XPATH, '//*[contains(text(), "Welcome")]'))
