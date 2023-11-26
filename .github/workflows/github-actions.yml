@@ -7,11 +7,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11.4'
       - uses: nanasess/setup-chromedriver@v2
       - uses: browser-actions/setup-chrome@v1
       - run: chrome --version
-        with:
-          python-version: '3.11.4'
       - run: |
             export DISPLAY=:99
             chromedriver --url-base=/wd/hub &
