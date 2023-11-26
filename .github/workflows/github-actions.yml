@@ -1,8 +1,17 @@
 name: Inventory Manager Actions
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: Tester
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Selenium-Actions:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Action triggered by a ${{ github.event_name }} event."
+      - uses: nanasess/setup-chromedriver@v2
+      - run: |
+            export DISPLAY=:99
+            chromedriver --url-base=/wd/hub &
+            sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+            
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip install flake8
+      - run: pip install -r requirements.txt
