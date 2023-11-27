@@ -245,7 +245,6 @@ class SeleniumTester(StaticLiveServerTestCase):
 		
 	@classmethod
 	def tearDownClass(cls):
-		crap = 1 + 1
 		cls.selenium.quit()
 		super().tearDownClass()
 	
@@ -601,6 +600,10 @@ class SeleniumTester(StaticLiveServerTestCase):
 		
 		# hit submit
 		self.selenium.find_element(By.NAME, "submit").click()
+
+		print("From testCreateOrderItem")
+		get_url = self.selenium.current_url
+		print("The current url is:"+str(get_url))
 		
 		# we should also be at the order page now. verify the item's on the page
 		self.assertTrue(testItemName in self.selenium.page_source)
