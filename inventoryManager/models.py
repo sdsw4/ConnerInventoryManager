@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 # Create your models here.
@@ -6,10 +7,9 @@ from django.urls import reverse
 # Highest level, the organization
 # An organization will have multiple orders
 class Organization(models.Model):
-    name = models.CharField(max_length = 200)
-    contact_name = models.CharField(max_length = 200)
-    contact_email = models.CharField(max_length = 200)
+    name = models.CharField(max_length = 200, unique = True)
     about = models.CharField(max_length = 200, blank = True)
+    associatedUser = models.ForeignKey(User, on_delete=models.CASCADE, default = None)
 
     # Define the default string to return the name that represents the Model object.
     def __str__(self):
@@ -29,13 +29,13 @@ class Organization(models.Model):
 # An order is assigned to only one organization
 # but an order can have many line-items
 class Order(models.Model):
-    posted = models.DateField()
-    ordered = models.DateField(blank = True, null=True)
-    completed = models.DateField(blank = True, null=True)
-
     title = models.CharField(max_length = 200)
     description = models.CharField(max_length = 200)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, default = None)
+
+    posted = models.DateField()
+    ordered = models.DateField(blank = True, null=True)
+    completed = models.DateField(blank = True, null=True)
 
     # Define the default string to return the name that represents the Model object.
     def __str__(self):
@@ -47,3 +47,29 @@ class Order(models.Model):
     # In the Admin site.
     def get_absolute_url(self):
         return reverse('order-detail', args=[str(self.id)])
+
+    def getNumItems(self):
+        return OrderItem.objects.filter(order = self).count()
+
+    def getTotalCost(self):
+        allOrderItems = OrderItem.objects.filter(order = self)
+        totalCost = 0.00
+
+        for item in allOrderItems:
+            totalCost += item.getTotalCost()
+
+        return totalCost
+
+class OrderItem(models.Model):
+    itemName = models.CharField(max_length = 200)
+    itemNsn = models.CharField(max_length = 200)
+    itemQuantity = models.DecimalField(max_digits=5, decimal_places=0)
+    itemCost = models.DecimalField(max_digits=12, decimal_places=2)
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, default = None)
+
+    def get_absolute_url(self):
+        return reverse('order-item-detail', args=[str(self.order.organization.id), str(self.order.id), str(self.id)])
+
+    def getTotalCost(self):
+        return float(self.itemQuantity) * float(self.itemCost)

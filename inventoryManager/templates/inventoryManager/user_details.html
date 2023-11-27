@@ -1,0 +1,22 @@
+{% extends 'inventoryManager/base_template.html' %}
+
+{% block content %}
+<h1>User details</h1>
+
+<h2>My organizations:</h2>
+    {% if organization_list %}
+<div class="container d-flex flex-row p-1 text-dark text-left float-start">
+    {% for org in organization_listt %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5>{{ org.name }}</h5>
+            <p class="card-text">{{ org.description }}</p>
+            <a class="btn btn-primary" href="{% url 'order-detail' organization.id order.id %}" role="button">View</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+        {% else %}
+<p>This user has no organizations.</p>
+    {% endif %}
+    {% endblock %}

@@ -11,7 +11,7 @@
             {% if order %}
             {{ state }}: <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a>
             {% else %}
-            {{ state }}: Order
+            {{ state }} Order
             {% endif %}
         </h1>
     </div>
@@ -19,22 +19,11 @@
 
 <form action="" method="POST">
     {% csrf_token %}
-    {% for field in form %}
-    <div class="form-group">
-        <label class="control-label lead" for="id_{{ field.name }}">{{ field.label }}</label>
-        <br>
-        {{ field }}
-        <br>
-    </div>
-    {% endfor %}
-
+    <strong>Are you sure you want to delete this order?</strong>
+    <p>This order has: {{ order.getNumItems }} items.</p>
     <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
-    {% if order %}
     <a href="{% url 'order-detail' organization.id order.id %}" type="button" class="btn btn-primary">Cancel</a>
-    {% else %}
-    <a href="{% url 'organization-detail' organization.id %}" type="button" class="btn btn-primary">Cancel</a>
-    {% endif %}
-    <input class="btn btn-primary" type="submit" value="Submit" name="submit">
+    <input class="btn btn-primary" type="submit" value="Delete" name="submit">
 </form>
 
 {% endblock %}

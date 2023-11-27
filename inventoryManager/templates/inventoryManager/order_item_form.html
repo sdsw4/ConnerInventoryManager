@@ -7,13 +7,14 @@
     <div class="d-flex flex-row border gap-4 mx-2">
         <h1>
             <a href="{% url 'organizations' %}">Organizations</a> ->
-            {% if organization %}
-            {{ state }}: <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a>
+            <a href="{% url 'organization-detail' organization.id %}">{{ organization.name }}</a> ->
+            <a href="{% url 'order-detail' organization.id order.id %}">{{ order.title }}</a> ->
+            {% if item_data %}
+            {{ state }}: <a href="{% url 'order-item-detail' organization.id order.id item_data.id %}">{{ item_data.itemName }}</a>
             {% else %}
-            {{ state }}: Organization
+            {{ state }}: Order Item
             {% endif %}
         </h1>
-
     </div>
 </div>
 
@@ -27,11 +28,10 @@
         <br>
     </div>
     {% endfor %}
-    <!-- <input formnovalidate class="btn btn-primary" type="submit" value="Cancel" name="submit"> -->
-    {% if organization %}
-    <a href="{% url 'organization-detail' organization.id %}" type="button" class="btn btn-primary">Cancel</a>
+    {% if item_data %}
+    <a href="{% url 'order-item-detail' organization.id order.id item_data.id %}" type="button" class="btn btn-primary">Cancel</a>
     {% else %}
-    <a href="{% url 'organizations' %}" type="button" class="btn btn-primary">Cancel</a>
+    <a href="{% url 'order-detail' organization.id order.id %}" type="button" class="btn btn-primary">Cancel</a>
     {% endif %}
     <input class="btn btn-primary" type="submit" value="Submit" name="submit">
 </form>

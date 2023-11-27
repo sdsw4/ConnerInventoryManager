@@ -1,0 +1,23 @@
+{% include formPage %}
+
+{% block form %}
+<div class="fixed-top w-100 h-100 bg-secondary row align-items-center" style="--bs-bg-opacity: .25;">
+    <div class="container-md bg-white p-4 w-25 rounded shadow mb-5">
+        <h2>User Details</h2>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label class="control-label lead" for="id_{{ field.name }}">{{ field.label }}</label>
+                <br>
+                {{ field }}
+                <br>
+            </div>
+            {% endfor %}
+            <!-- <input formnovalidate class="btn btn-secondary" type="submit" value="Cancel" name="submit"> -->
+            <a href="{% url 'index' %}" type="button" class="btn btn-primary">Cancel</a>
+            <input class="btn btn-primary" type="submit" value="Submit" name="submit">
+        </form>
+    </div>
+</div>
+{% endblock %}
