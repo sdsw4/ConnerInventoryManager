@@ -13,6 +13,7 @@ jobs:
       - uses: browser-actions/setup-chrome@v1
       - run: chrome --version          
       - run: pip install flake8
+      - run: pip install coverage
       - run: pip install -r requirements.txt
       - run: python manage.py makemigrations
       - run: python manage.py migrate
