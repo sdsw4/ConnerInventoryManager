@@ -400,6 +400,7 @@ class SeleniumTester(StaticLiveServerTestCase):
 		# hit submit
 		self.selenium.find_element(By.NAME, "submit").click()
 
+		print("From testCreateOrg")
 		get_url = self.selenium.current_url
 		print("The current url is:"+str(get_url))
 		
@@ -496,6 +497,10 @@ class SeleniumTester(StaticLiveServerTestCase):
 		testOrder = Order.objects.get(title = testName)
 		id = testOrder.id
 		self.assertTrue(Order.objects.filter(id=id).exists())
+
+		print("From testCreateOrder")
+		get_url = self.selenium.current_url
+		print("The current url is:"+str(get_url))
 		
 		# we should also be at the org page now. verify the order's on the page
 		self.assertTrue(orgName in self.selenium.page_source)
